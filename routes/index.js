@@ -1,16 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const {addNewUser, getallUser} = require('../services/index')
+const middleware = require('../middleware/index')
+const { addNewUser, getallUser, loggedIn, create_posts, all_posts, edit_posts, delete_post } = require("../services/index");
 
-
-// ======================================for uer registration====================================
+// ======================================for user registration====================================
 
 router.post("/add_user", addNewUser);
 
-router.get('/all_user',getallUser)
+router.get("/all_user", getallUser);
 
-router.get("/all_posts", (req, res) => {
-  console.log("reached here");
-});
+router.post("/existing_user", loggedIn);
+
+// ===================================== for post routes =========================================
+
+router.post('/create_post',middleware,create_posts)
+
+router.get('/all_posts',middleware,all_posts)
+
+router.put('/edit_post/:id',middleware, edit_posts)
+
+router.delete('/delete_post/:id',middleware, delete_post)
 
 module.exports = router;
