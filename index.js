@@ -4,8 +4,31 @@ const mongoose = require('mongoose')
 const body_parser = require('body-parser')
 const cookie_parser = require('cookie-parser')
 const routes = require('./routes/index')
+const http = require('http');
+const { Server } = require('socket.io'); 
 const app = express();
-app.use(cors());
+const server = http.createServer(app);
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  credentials: true 
+}));
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", // Your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  transports: ["websocket", "polling"], // allow websocket first
+});
+app.set('io', io);
+
+io.on('connection', (socket) => {
+  console.log('🔌 New client connected:', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('❌ Client disconnected:', socket.id);
+  });
+});
 app.use(body_parser.json());
 app.use(cookie_parser())
 app.use('/v1',routes)
@@ -22,6 +45,6 @@ mongoose.connect(url, {
   console.error('❌ MongoDB connection error:', err);
 });
 const PORT = 4000;
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log("🚀Listening to port :::",PORT)
 })
