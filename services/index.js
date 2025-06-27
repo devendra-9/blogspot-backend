@@ -25,7 +25,7 @@ const addNewUser = async (req, res) => {
       password: new_password,
       email,
     });
-    const token = jwt.sign({ email: email }, JWT_SECRET, {
+    const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
     const find_new_user = await userSchema.findOne({_id:new_user})
@@ -76,7 +76,7 @@ const loggedIn = async (req, res) => {
         message: "Invalid username or password",
       });
     }
-    const token = jwt.sign({ email: email }, JWT_SECRET, {
+    const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
     res.cookie("token", token, {

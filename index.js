@@ -7,14 +7,15 @@ const routes = require('./routes/index')
 const http = require('http');
 const { Server } = require('socket.io'); 
 const app = express();
+require('dotenv').config();
 const server = http.createServer(app);
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: process.env.CLIENT_URL, 
   credentials: true 
 }));
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Your frontend URL
+    origin: process.env.CLIENT_URL, // Your frontend URL
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -33,7 +34,7 @@ app.use(body_parser.json());
 app.use(cookie_parser())
 app.use('/v1',routes)
 
-const url = 'mongodb+srv://devendrakandpal07:admin123@cluster0.x3zl6sc.mongodb.net/blogplatform?retryWrites=true&w=majority&appName=blogplatform';
+const url = process.env.MONGO_URI
 mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -44,7 +45,7 @@ mongoose.connect(url, {
 .catch((err) => {
   console.error('❌ MongoDB connection error:', err);
 });
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT,()=>{
     console.log("🚀Listening to port :::",PORT)
 })
