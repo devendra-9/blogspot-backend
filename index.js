@@ -9,13 +9,20 @@ const { Server } = require('socket.io');
 const app = express();
 require('dotenv').config();
 const server = http.createServer(app);
+const allowedOrigins = [process.env.CLIENT_URL,"https://blogposts-11ey.vercel.app"]
 app.use(cors({
-  origin: process.env.CLIENT_URL, 
-  credentials: true 
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL, // Your frontend URL
+    origin: allowedOrigins, // Your frontend URL
     methods: ["GET", "POST"],
     credentials: true,
   },
