@@ -9,7 +9,7 @@ const { Server } = require('socket.io');
 const app = express();
 require('dotenv').config();
 const server = http.createServer(app);
-const allowedOrigins = [process.env.CLIENT_URL,"https://blogposts-11ey.vercel.app"]
+const allowedOrigins = [process.env.CLIENT_URL]
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -56,3 +56,4 @@ const PORT = process.env.PORT || 4000;
 server.listen(PORT,()=>{
     console.log("🚀Listening to port :::",PORT)
 })
+
