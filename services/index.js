@@ -2,7 +2,7 @@ const userSchema = require("../db/userSchema");
 const posts = require("../db/blogSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "ASSIGNMENT";
+// const JWT_SECRET = "ASSIGNMENT";
 const saltRounds = 10;
 
 // ================================ user =========================================

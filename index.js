@@ -22,9 +22,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Handle preflight OPTIONS requests globally
-app.options('*', cors());
-
 // Then body parser and others
 app.use(body_parser.json());
 app.use(cookie_parser());
