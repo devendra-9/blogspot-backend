@@ -111,10 +111,6 @@ const create_posts = async (req, res) => {
       body,
     });
 
-    // Emit the event
-    const io = req.app.get("io"); // Access io from app
-    io.emit("posts_updated"); // Notify all connected clients
-
     res.status(200).json({
       success: true,
       message: "Data Successfully added",
@@ -170,11 +166,6 @@ const edit_posts = async (req, res) => {
       });
 
     await posts.updateOne({ _id: id }, { $set: req.body });
-
-    // Emit update event
-    const io = req.app.get("io");
-    io.emit("posts_updated");
-
     res.status(200).json({
       success: true,
       message: "Updated Successfully",
@@ -208,11 +199,6 @@ const delete_post = async (req, res) => {
       });
 
     await posts.deleteOne({ _id: id });
-
-    // Emit update event
-    const io = req.app.get("io");
-    io.emit("posts_updated");
-
     res.status(200).json({
       success: true,
       message: "Deleted Successfully",

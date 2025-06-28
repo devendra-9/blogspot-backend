@@ -4,12 +4,13 @@ const mongoose = require('mongoose')
 const body_parser = require('body-parser')
 const cookie_parser = require('cookie-parser')
 const routes = require('./routes/index')
-const http = require('http');
-const { Server } = require('socket.io'); 
 const app = express();
 require('dotenv').config();
-const server = http.createServer(app);
 const allowedOrigins = [process.env.CLIENT_URL]
+
+
+
+// Always put CORS middleware at the top
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -20,25 +21,18 @@ app.use(cors({
   },
   credentials: true
 }));
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins, // Your frontend URL
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-  transports: ["websocket", "polling"], // allow websocket first
-});
-app.set('io', io);
 
-io.on('connection', (socket) => {
-  console.log('🔌 New client connected:', socket.id);
+// Handle preflight OPTIONS requests globally
+app.options('*', cors());
 
-  socket.on('disconnect', () => {
-    console.log('❌ Client disconnected:', socket.id);
-  });
-});
+// Then body parser and others
 app.use(body_parser.json());
-app.use(cookie_parser())
+app.use(cookie_parser());
+app.use(cors({
+  origin: true,  // or use '*', but 'true' lets credentials work
+  credentials: true
+}));
+
 app.use('/v1',routes)
 
 const url = process.env.MONGO_URI
@@ -53,7 +47,7 @@ mongoose.connect(url, {
   console.error('❌ MongoDB connection error:', err);
 });
 const PORT = process.env.PORT || 4000;
-server.listen(PORT,()=>{
+app.listen(PORT,()=>{
     console.log("🚀Listening to port :::",PORT)
 })
 
